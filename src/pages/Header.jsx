@@ -1,13 +1,33 @@
-import React from 'react';
-import { AppBar, Toolbar, Typography, Button, Tabs, Tab } from '@mui/material';
+import React, { useState } from 'react';
+import {
+    AppBar,
+    Toolbar,
+    Typography,
+    Button,
+    Tabs,
+    Tab,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    TextField,
+} from '@mui/material';
 import PhoneIcon from '@mui/icons-material/Phone';
 import CallIcon from '@mui/icons-material/Call';
 import CodeIcon from '@mui/icons-material/Code';
-import { useNavigate, useLocation } from 'react-router-dom'; // Иконка для логотипа
+import { useNavigate, useLocation } from 'react-router-dom';
+import { createCallRequest } from '../api/api'; // Импортируем функцию для создания заявки на звонок
 
 const Header = () => {
     const navigate = useNavigate();
     const location = useLocation();
+
+    // Состояние для управления диалогом
+    const [openDialog, setOpenDialog] = useState(false);
+
+    // Состояние для данных формы
+    const [name, setName] = useState('');
+    const [phone, setPhone] = useState('');
 
     // Определяем активную вкладку на основе текущего пути
     const getTabValue = () => {
@@ -19,16 +39,43 @@ const Header = () => {
             case '/contacts':
                 return 2;
             case '/login':
-                return 3; // Новая вкладка для логина
+                return 3;
             default:
                 return 0;
         }
     };
 
-    const [value, setValue] = React.useState(getTabValue());
+    const [value, setValue] = useState(getTabValue());
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
+    };
+
+    // Открытие диалога
+    const handleOpenDialog = () => {
+        setOpenDialog(true);
+    };
+
+    // Закрытие диалога
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    };
+
+    // Обработка отправки формы
+    const handleSubmit = async () => {
+        const callRequestData = {
+            name,
+            phone,
+        };
+
+        try {
+            await createCallRequest(callRequestData); // Отправляем данные на сервер
+            alert('Заявка на звонок успешно отправлена!');
+            handleCloseDialog(); // Закрываем диалог
+        } catch (error) {
+            console.error('Ошибка при отправке заявки:', error);
+            alert('Произошла ошибка при отправке заявки.');
+        }
     };
 
     return (
@@ -69,6 +116,7 @@ const Header = () => {
                             color: '#e6a100',
                         },
                     }}
+                    onClick={handleOpenDialog} // Открываем диалог при нажатии
                 >
                     Заказать звонок
                 </Button>
@@ -126,6 +174,89 @@ const Header = () => {
                     onClick={() => navigate('/login')}
                 />
             </Tabs>
+
+            {/* Диалог для заказа звонка */}
+            <Dialog
+                open={openDialog}
+                onClose={handleCloseDialog}
+                PaperProps={{
+                    sx: {
+                        borderRadius: '12px', // Скругление углов
+                        boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.25)', // Тень
+                        backgroundColor: '#272632', // Цвет фона
+                        color: '#FFFFFF', // Цвет текста
+                    },
+                }}
+            >
+                <DialogTitle sx={{ color: '#FFB300', fontWeight: 'bold', textAlign: 'center' }}>
+                    Заказать звонок
+                </DialogTitle>
+                <DialogContent>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        label="Ваше имя"
+                        type="text"
+                        fullWidth
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        sx={{
+                            mb: 2,
+                            '& .MuiInputLabel-root': { color: '#FFB300' }, // Цвет лейбла
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': { borderColor: '#FFB300' }, // Цвет рамки
+                                '&:hover fieldset': { borderColor: '#e6a100' }, // Цвет рамки при наведении
+                                '&.Mui-focused fieldset': { borderColor: '#FFB300' }, // Цвет рамки при фокусе
+                            },
+                            '& .MuiInputBase-input': { color: '#FFFFFF' }, // Цвет текста
+                        }}
+                    />
+                    <TextField
+                        margin="dense"
+                        label="Телефон"
+                        type="tel"
+                        fullWidth
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        sx={{
+                            '& .MuiInputLabel-root': { color: '#FFB300' }, // Цвет лейбла
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': { borderColor: '#FFB300' }, // Цвет рамки
+                                '&:hover fieldset': { borderColor: '#e6a100' }, // Цвет рамки при наведении
+                                '&.Mui-focused fieldset': { borderColor: '#FFB300' }, // Цвет рамки при фокусе
+                            },
+                            '& .MuiInputBase-input': { color: '#FFFFFF' }, // Цвет текста
+                        }}
+                    />
+                </DialogContent>
+                <DialogActions sx={{ padding: '16px', justifyContent: 'center' }}>
+                    <Button
+                        onClick={handleCloseDialog}
+                        sx={{
+                            color: '#FFB300',
+                            borderColor: '#FFB300',
+                            '&:hover': {
+                                borderColor: '#e6a100',
+                                color: '#e6a100',
+                            },
+                        }}
+                    >
+                        Отмена
+                    </Button>
+                    <Button
+                        onClick={handleSubmit}
+                        sx={{
+                            backgroundColor: '#FFB300',
+                            color: '#1B1A22',
+                            '&:hover': {
+                                backgroundColor: '#e6a100',
+                            },
+                        }}
+                    >
+                        Отправить
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </AppBar>
     );
 };

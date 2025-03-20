@@ -1,18 +1,28 @@
 import React, { useState } from 'react';
 import { Box, Typography, TextField, Button, Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import {signIn} from "../api/api";
 
 const Login = () => {
-    const navigate = useNavigate();
     const [email, setEmail] = useState(''); // Состояние для email
     const [password, setPassword] = useState(''); // Состояние для пароля
+    const [error, setError] = useState(''); // Состояние для ошибки
 
     // Обработчик отправки формы
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log({ email, password });
-        alert('Вход выполнен!');
-        navigate('/'); // Переход на главную страницу после успешного входа
+
+        try {
+            // Вызываем функцию signIn для входа
+            const response = await signIn(email, password);
+            console.log('Вход выполнен:', response);
+
+            // Перенаправляем пользователя на главную страницу
+            window.location.reload();
+        } catch (error) {
+            console.error('Ошибка при входе:', error);
+            setError('Неверный email или пароль. Пожалуйста, попробуйте еще раз.');
+        }
     };
 
     return (
@@ -43,6 +53,13 @@ const Login = () => {
                 <Typography variant="body1" sx={{ color: '#555', mb: 4 }}>
                     Введите ваш email и пароль для входа
                 </Typography>
+
+                {/* Отображение ошибки */}
+                {error && (
+                    <Typography variant="body2" sx={{ color: 'red', mb: 2 }}>
+                        {error}
+                    </Typography>
+                )}
 
                 {/* Форма входа */}
                 <form onSubmit={handleSubmit}>

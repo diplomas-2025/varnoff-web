@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Typography, Button, TextField, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, InputAdornment } from '@mui/material';
-import { Person, Phone, Email, Message } from '@mui/icons-material'; // Иконки для полей ввода
+import { Person, Phone, Email, Message } from '@mui/icons-material';
+import {createRequest} from "../api/api"; // Иконки для полей ввода
 
 const RequestForm = () => {
     const [service, setService] = useState(''); // Выбранная услуга
@@ -10,16 +11,34 @@ const RequestForm = () => {
     const [message, setMessage] = useState(''); // Сообщение
 
     // Обработчик отправки формы
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log({
-            service,
+
+        // Преобразуем выбранную услугу в формат, ожидаемый сервером
+        const serviceMap = {
+            'Создание сайтов': 'WEBSITE_DEVELOPMENT',
+            'Разработка приложений': 'MOBILE_APP_DEVELOPMENT',
+            'Дизайн и брендинг': 'BRANDING_DESIGN',
+            'SEO-оптимизация': 'SEO_OPTIMIZATION',
+        };
+
+        const requestData = {
             name,
             phone,
             email,
+            service: serviceMap[service],
             message,
-        });
-        alert('Ваша заявка отправлена!');
+        };
+
+        try {
+            // Отправляем данные на сервер
+            const response = await createRequest(requestData);
+            console.log('Заявка успешно создана:', response.data);
+            alert('Ваша заявка отправлена!');
+        } catch (error) {
+            console.error('Ошибка при отправке заявки:', error);
+            alert('Произошла ошибка при отправке заявки. Пожалуйста, попробуйте еще раз.');
+        }
     };
 
     return (
