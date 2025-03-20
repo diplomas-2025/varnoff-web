@@ -1,3 +1,5 @@
+@import '~leaflet/dist/leaflet.css';
+
 .App {
   text-align: center;
 }
@@ -35,4 +37,18 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.leaflet-marker-icon {
+  animation: bounce 1.5s infinite;
 }
