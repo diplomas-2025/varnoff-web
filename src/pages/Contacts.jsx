@@ -3,6 +3,7 @@ import { Box, Typography, Button, Link, Divider } from '@mui/material';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import {useNavigate} from "react-router-dom";
 
 export const customIcon = new L.Icon({
     iconUrl: 'dot.png',
@@ -12,6 +13,7 @@ export const customIcon = new L.Icon({
 });
 
 const Contacts = () => {
+    const navigate = useNavigate();
     // Координаты офиса (г. Самара, ул. Мичурина 21Д, офис 105)
     const officeCoordinates = [53.2021, 50.1595];
 
@@ -111,6 +113,7 @@ const Contacts = () => {
                         transition: 'transform 0.3s ease',
                     },
                 }}
+                onClick={() => navigate('/request')}
             >
                 Оставить заявку
             </Button>

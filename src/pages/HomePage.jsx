@@ -1,8 +1,11 @@
 import React from 'react';
 import { Box, Typography, Button, Grid, Card, CardContent, Avatar, Divider } from '@mui/material';
 import { CheckCircle, Star, Groups, Work } from '@mui/icons-material';
+import {useNavigate} from "react-router-dom";
 
 const HomePage = () => {
+    const navigate = useNavigate()
+
     // Генерация отзывов
     const reviews = [
         {
@@ -238,6 +241,7 @@ const HomePage = () => {
                             transition: 'transform 0.3s ease',
                         },
                     }}
+                    onClick={() => navigate('/request')}
                 >
                     Оставить заявку
                 </Button>
