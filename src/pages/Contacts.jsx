@@ -1,21 +1,15 @@
 import React from 'react';
 import { Box, Typography, Button, Link, Divider } from '@mui/material';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import L from 'leaflet'; // Импортируем Leaflet для кастомного маркера
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 
-// Импортируем иконку маркера
-import markerIcon from 'leaflet/dist/images/marker-icon.png';
-import markerIconShadow from 'leaflet/dist/images/marker-shadow.png';
-
-// Фикс для иконки маркера
-const DefaultIcon = L.icon({
-    iconUrl: markerIcon,
-    shadowUrl: markerIconShadow,
-    iconSize: [25, 41], // Размер иконки
-    iconAnchor: [12, 41], // Точка привязки иконки
+export const customIcon = new L.Icon({
+    iconUrl: 'dot.png',
+    iconSize: [25, 25],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
 });
-
-L.Marker.prototype.options.icon = DefaultIcon;
 
 const Contacts = () => {
     // Координаты офиса (г. Самара, ул. Мичурина 21Д, офис 105)
@@ -78,12 +72,15 @@ const Contacts = () => {
                     center={officeCoordinates}
                     zoom={16}
                     style={{ height: '100%', width: '100%' }}
+                    zoomControl={false}
                 >
                     <TileLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     />
-                    <Marker position={officeCoordinates}>
+                    <Marker
+                        icon={customIcon}
+                        position={[53.2021, 50.1595]}
+                    >
                         <Popup>
                             <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
                                 ООО «ВАРНОФФ»

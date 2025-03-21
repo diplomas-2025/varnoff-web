@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import {signIn} from "../api/api";
 
 const Login = () => {
+    const navigate = useNavigate();
     const [email, setEmail] = useState(''); // Состояние для email
     const [password, setPassword] = useState(''); // Состояние для пароля
     const [error, setError] = useState(''); // Состояние для ошибки
@@ -15,9 +16,7 @@ const Login = () => {
         try {
             // Вызываем функцию signIn для входа
             const response = await signIn(email, password);
-            console.log('Вход выполнен:', response);
-
-            // Перенаправляем пользователя на главную страницу
+            navigate('/admin');
             window.location.reload();
         } catch (error) {
             console.error('Ошибка при входе:', error);

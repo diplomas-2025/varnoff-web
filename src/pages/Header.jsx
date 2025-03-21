@@ -29,6 +29,8 @@ const Header = () => {
     const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
 
+    const isAuth = localStorage.getItem('authToken');
+
     // Определяем активную вкладку на основе текущего пути
     const getTabValue = () => {
         switch (location.pathname) {
@@ -38,7 +40,7 @@ const Header = () => {
                 return 1;
             case '/contacts':
                 return 2;
-            case '/login':
+            case '/login' || "/admin":
                 return 3;
             default:
                 return 0;
@@ -164,14 +166,14 @@ const Header = () => {
                     onClick={() => navigate('/contacts')}
                 />
                 <Tab
-                    label="Вход"
+                    label={ isAuth ? "Админ" : "Вход"}
                     sx={{
                         color: value === 3 ? '#FFB300' : '#FFFFFF', // Цвет текста
                         '&.Mui-selected': {
                             color: '#FFB300', // Цвет текста активной вкладки
                         },
                     }}
-                    onClick={() => navigate('/login')}
+                    onClick={() => navigate(isAuth ? '/admin' : '/login')}
                 />
             </Tabs>
 

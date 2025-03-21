@@ -52,3 +52,8 @@
 .leaflet-marker-icon {
   animation: bounce 1.5s infinite;
 }
+
+
+.leaflet-bottom.leaflet-right {
+  display: none !important;
+}
